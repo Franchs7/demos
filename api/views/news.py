@@ -23,7 +23,7 @@ def Sendcode(phone, code):
     try:
         phone = f'+86{phone}'
         code = str(code)
-        cred = credential.Credential("AKIDoDH4cowinbBbkfp3WhdIEyMYWWI5nLUX", "4xjGfqMpvsTCgxzwe6RTQBguppjZEj03")
+        cred = credential.Credential("secretid", "secretkey")
 
         client = sms_client.SmsClient(cred, "ap-guangzhou")
 
