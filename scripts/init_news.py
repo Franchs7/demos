@@ -20,14 +20,14 @@ for i in range(1,37):
         user_id=1
     )
 
-    models.NewsDetail.objects.create(
-        key="08a9daei1578736867828.png",
-        cos_path="https://mini-1251317460.cos.ap-chengdu.myqcloud.com/08a9daei1578736867828.png",
-        news=news_object
-    )
-
-    models.NewsDetail.objects.create(
-        key="0d3q0evq1578906084254.jpg",
-        cos_path="https://mini-1251317460.cos.ap-chengdu.myqcloud.com/0d3q0evq1578906084254.jpg",
-        news=news_object
-    )
+    # models.NewsDetail.objects.create(
+    #     key="08a9daei1578736867828.png",
+    #     cos_path="https://mini-1251317460.cos.ap-chengdu.myqcloud.com/08a9daei1578736867828.png",
+    #     news=news_object
+    # )
+    #
+    # models.NewsDetail.objects.create(
+    #     key="0d3q0evq1578906084254.jpg",
+    #     cos_path="https://mini-1251317460.cos.ap-chengdu.myqcloud.com/0d3q0evq1578906084254.jpg",
+    #     news=news_object
+    # )

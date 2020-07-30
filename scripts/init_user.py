@@ -12,7 +12,7 @@ django.setup()
 from api import models
 for i in range(20):
     models.UserInfo.objects.create(
-        telephone='1513125555',
+        phone='1513125555',
         nickname='大卫-{0}'.format(i),
         avatar='https://mini-1251317460.cos.ap-chengdu.myqcloud.com/08a9daei1578736867828.png'
     )
