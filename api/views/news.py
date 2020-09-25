@@ -11,18 +11,17 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from api import models
 
-from api.serializers.acount import LoginSerializer, MessageSerializer
-from utils.authentication import GeneralAuthentication
+from utils.authentication import GeneralAuthentication, UserAuthentication
 from utils.filter import MinFilterBackend, MaxFilterBackend
 from utils.pagination import LimitPagenation
 from api import tasks
-
 
 
 class TopicSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Topic
         fields = '__all__'
+
 
 # 话题接口
 class TopicView(ListAPIView):
@@ -48,6 +47,7 @@ class NewsSerializer(serializers.ModelSerializer):
         if not obj.topic:
             return
         return model_to_dict(obj.topic, fields=['id', 'title'])
+
 
 # 动态列表接口
 class NewsView(ListAPIView):
@@ -116,13 +116,14 @@ class NewsDetailSerializer(serializers.ModelSerializer):
             'reply__user__nickname'
         )
         import collections
-        first_dict = collections.OrderedDict() #有序字典key排序
+        first_dict = collections.OrderedDict()  # 有序字典key排序
         for item in first_queryset:
             item['create_date'] = item['create_date'].strftime('%Y-%m-%d')
             first_dict[item['id']] = item
         for node in second_queryset:
             first_dict[node['reply_id']]['child'] = [node, ]
         return first_dict.values()
+
 
 # 动态详情接口
 class NewsDetailView(RetrieveAPIView):
@@ -136,17 +137,21 @@ class CommentModelSerializer(serializers.ModelSerializer):
     user__avatar = serializers.CharField(source='user.avatar')
     reply_id = serializers.CharField(source='reply.id')
     reply__user__nickname = serializers.CharField(source='reply.user.nickname')
+
     class Meta:
         model = models.CommentRecord
         exclude = ['news', 'user', 'reply', 'depth', 'root', 'favor_count']
+
 
 class CreateCommentModelSerializer(serializers.ModelSerializer):
     """
      news.id, content, reply.id, root
     """
+
     class Meta:
         model = models.CommentRecord
-        exclude = ['user','favor_count']
+        exclude = ['user', 'favor_count']
+
 
 # 评论获取接口,和创建评论接口
 class CommentView(APIView):
@@ -162,17 +167,23 @@ class CommentView(APIView):
 }
 
     """
+    def get_authenticators(self):
+        if self.request.method=='POST':
+            return [UserAuthentication,]
+        return [GeneralAuthentication]
+
     def get(self, request, *args, **kwargs):
         queryset = models.CommentRecord.objects.filter(root_id=request.query_params.get('root')).order_by('id')
         ser = CommentModelSerializer(instance=queryset, many=True)
-        return Response(ser.data,status=status.HTTP_200_OK)
+        return Response(ser.data, status=status.HTTP_200_OK)
+
     def post(self, request, *args, **kwargs):
         ser = CreateCommentModelSerializer(data=request.data)
         if not ser.is_valid():
             return Response(ser.errors, status=status.HTTP_400_BAD_REQUEST)
         ser.save(user_id=1)
         new_id = ser.data.get('news')
-        models.News.objects.filter(id=new_id).update(comment_count=F('comment_count')+1)
+        models.News.objects.filter(id=new_id).update(comment_count=F('comment_count') + 1)
         return Response(ser.data, status.HTTP_201_CREATED)
 
 
@@ -180,6 +191,7 @@ class FavorModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.NewsFavorRecord
         fields = ['news']
+
 
 # 新闻点赞
 class FavorView(APIView):
