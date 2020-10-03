@@ -18,13 +18,13 @@ def Sendcode(phone, code):
         # 推荐使用IDE进行开发，可以方便的跳转查阅各个接口和数据结构的文档说明
         req = models.SendSmsRequest()
 
-        req.SmsSdkAppid = "1400401982"
+        req.SmsSdkAppid = ""
         # 短信签名内容: 使用 UTF-8 编码，必须填写已审核通过的签名，签名信息可登录 [短信控制台] 查看
-        req.Sign = "franchs豪七"
+        req.Sign = ""
         # 短信码号扩展号: 默认未开通，如需开通请联系 [sms helper]
         req.PhoneNumberSet = [phone]
         # 模板 ID: 必须填写已审核通过的模板 ID。模板ID可登录 [短信控制台] 查看
-        req.TemplateID = "672604"
+        req.TemplateID = ""
         # 模板参数: 若无模板参数，则设置为空
         req.TemplateParamSet = [code]
 
